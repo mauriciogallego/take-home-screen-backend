@@ -12,3 +12,80 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Quote {
+  id        String      @id @default(uuid()) @db.VarChar(36)
+  total     Float       @default(0)
+  frqId     String      @unique @db.VarChar(36)
+  saleId    String      @db.VarChar(36)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  sale      Sale        @relation(fields: [saleId], references: [id])
+  rfq       Rfq         @relation(fields: [frqId], references: [id])
+  QuoteItem QuoteItem[]
+}
+
+model QuoteItem {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  quoteId    String   @db.VarChar(36)
+  productId  String   @db.VarChar(36)
+  amount     Float
+  priceUnit  Float
+  expireDate DateTime
+  quantity   Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  quote      Quote    @relation(fields: [quoteId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model Rfq {
+  id            String   @id @default(uuid()) @db.VarChar(36)
+  body          String   @db.Text
+  subject       String
+  customerEmail String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+  Quote         Quote?
+}
+
+model Sale {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  name      String
+  active    Boolean  @default(true)
+  email     String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  Quote     Quote[]
+}
+
+model Inventory {
+  id               String             @id @default(uuid()) @db.VarChar(36)
+  name             String
+  location         String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  InventoryProduct InventoryProduct[]
+}
+
+model InventoryProduct {
+  product     Product   @relation(fields: [productId], references: [id])
+  productId   String    @unique @db.VarChar(36)
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId String    @unique @db.VarChar(36)
+  amount      Float
+}
+
+model Product {
+  id               String             @id @default(uuid()) @db.VarChar(36)
+  name             String
+  code             String
+  description      String
+  deafultPrice     Float
+  measuringUnit    String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  QuoteItem        QuoteItem[]
+  InventoryProduct InventoryProduct[]
+}

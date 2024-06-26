@@ -6,11 +6,11 @@ import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
-import { UsersModule } from '@src/users/users.module';
+import { SalesModule } from '@src/sales/sales.module';
 
 @Module({
   imports: [
-    UsersModule,
+    SalesModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

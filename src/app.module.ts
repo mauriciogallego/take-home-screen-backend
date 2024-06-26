@@ -3,11 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SalesModule } from './sales/sales.module';
 import { QuoteModule } from './quote/quote.module';
-import { FrqModule } from './frq/frq.module';
+import { RfqModule } from './rfq/rfq.module';
+import { ProductsService } from './products/products.service';
+import { ProductsModule } from './products/products.module';
 
 @Module({
-  imports: [SalesModule, QuoteModule, FrqModule],
+  imports: [SalesModule, QuoteModule, RfqModule, ProductsModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ProductsService],
 })
 export class AppModule {}

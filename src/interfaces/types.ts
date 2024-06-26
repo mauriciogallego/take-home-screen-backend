@@ -41,3 +41,11 @@ export type IPaginationArgs<T> = T & {
   take?: number;
   includeCount?: boolean;
 };
+
+export interface IEntityService {
+  findAll(params: any);
+  findOne?(id: string, params: any);
+  create(data: any);
+  update(id: string, data: any, ...rest);
+  delete?(id: string);
+}

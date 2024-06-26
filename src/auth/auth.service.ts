@@ -1,31 +1,32 @@
 import {
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { SalesService } from '../sales/sales.service';
 import { JwtService } from '@nestjs/jwt';
-import { compare } from 'bcryptjs';
 import { IAccessToken } from '../interfaces/types';
 import * as bcrypt from 'bcryptjs';
 import { omit } from 'lodash';
-import { Usuario } from '@prisma/client';
-import { RegisterDto } from './dto/register.dto';
+import { Sale } from '@prisma/client';
 import { PrismaService } from '@src/database/prisma.service';
+import { errorCodes } from '@src/constants/errors';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     readonly prisma: PrismaService,
-    private usersService: UsersService,
+    private usersService: SalesService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, pass: string) {
     const user = await this.usersService.findByEmail(email);
     if (user) {
-      if (await compare(pass, user.password)) {
+      if (await bcrypt.compare(pass, user.password)) {
         const result = omit(user, 'password');
         return result;
       }
@@ -42,7 +43,7 @@ export class AuthService {
     }
   }
 
-  async login(user?: Usuario): Promise<IAccessToken> {
+  async login(user?: Sale): Promise<IAccessToken> {
     if (!user) {
       throw new UnauthorizedException({
         statusCode: 401,
@@ -66,27 +67,30 @@ export class AuthService {
     return bcrypt.hashSync(password, 10);
   }
 
-  throwIfUserIsNotValid(user: Omit<Usuario, 'password'>) {
+  throwIfUserIsNotValid(user: Omit<Sale, 'password'>) {
     if (user.active === false) {
       throw new ForbiddenException({
         statusCode: 403,
-        message: 'NOT_ACTIVE_USER',
+        message: errorCodes.USER_NOT_ACTIVE,
       });
     }
     return Promise.resolve(user);
   }
 
   async register(body: RegisterDto) {
-    this.validateSecurityPassword(body.password);
+    const exist = await this.usersService.findByEmail(body.email);
 
+    if (exist) {
+      throw new NotFoundException(errorCodes.EMAIL_ALREADY_TAKEN);
+    }
+
+    this.validateSecurityPassword(body.password);
     const password = this.hashPassword(body.password);
 
-    return await this.prisma.usuario.create({
-      data: {
-        email: body.email,
-        username: body.username,
-        password,
-      },
+    return await this.usersService.create({
+      password,
+      email: body.email,
+      name: body.name,
     });
   }
 }

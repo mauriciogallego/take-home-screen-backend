@@ -5,7 +5,6 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Logger } from '../logger';
 import { HttpAdapterHost } from '@nestjs/core';
 
 @Catch()
@@ -29,7 +28,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
 
-    Logger.error(exception, {
+    console.error(exception, {
       request: {
         body: request.body,
         user: request.user,
