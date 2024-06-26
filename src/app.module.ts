@@ -11,8 +11,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaModule } from './database/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
-// import { HealthController } from './health/health.controller';
-import { PrismaHealthIndicator } from '@nestjs/terminus';
+import { HealthController } from './health/health.controller';
+import { PrismaHealthIndicator } from './prisma.health';
+import { TerminusModule } from '@nestjs/terminus';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
@@ -27,6 +28,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
         signOptions: { expiresIn: config.get('jwt.expiration') },
       }),
     }),
+    TerminusModule,
     SalesModule,
     PrismaModule,
     QuoteModule,
@@ -34,7 +36,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     RfqModule,
     ProductsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [
     AppService,
     ProductsService,
