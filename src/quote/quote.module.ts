@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { QuoteController } from './quote.controller';
-import { QuoteService } from './quote.service';
+import { QuotesController } from './quote.controller';
+import { QuotesService } from './quote.service';
 
 @Module({
-  controllers: [QuoteController],
-  providers: [QuoteService]
+  controllers: [QuotesController],
+  providers: [QuotesService],
 })
 export class QuoteModule {}

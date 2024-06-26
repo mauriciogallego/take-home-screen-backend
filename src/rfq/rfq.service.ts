@@ -6,7 +6,7 @@ import { IEntityService, IPaginationArgs } from '@src/interfaces/types';
 
 @Injectable()
 export class RfqService extends Service implements IEntityService {
-  async findAll(params: IPaginationArgs<Prisma.FrqFindManyArgs>) {
+  async findAll(params: IPaginationArgs<Prisma.RfqFindManyArgs>) {
     const { includeCount, skip, take, ...findAllParams } = params;
 
     return this.paginate(
@@ -17,8 +17,8 @@ export class RfqService extends Service implements IEntityService {
       { includeCount, skip, take },
     );
   }
-  async findOne(id: string, findArgs?: { include?: Prisma.FrqInclude }) {
-    const args: Prisma.FrqFindUniqueArgs = {
+  async findOne(id: string, findArgs?: { include?: Prisma.RfqInclude }) {
+    const args: Prisma.RfqFindUniqueArgs = {
       where: {
         id,
       },
