@@ -11,8 +11,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaModule } from './database/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
-import { HealthController } from './health/health.controller';
+// import { HealthController } from './health/health.controller';
 import { PrismaHealthIndicator } from '@nestjs/terminus';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -32,7 +34,15 @@ import { PrismaHealthIndicator } from '@nestjs/terminus';
     RfqModule,
     ProductsModule,
   ],
-  controllers: [AppController, HealthController],
-  providers: [AppService, ProductsService, PrismaHealthIndicator],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    ProductsService,
+    PrismaHealthIndicator,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
