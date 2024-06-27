@@ -4,4 +4,5 @@ export default () => ({
     expiration: process.env.JWT_EXPIRATION || '10y',
   },
   port: process.env.PORT || 3000,
+  openAIApiKey: process.env.OPENAI_API_KEY,
 });

@@ -40,13 +40,23 @@ model QuoteItem {
 }
 
 model Rfq {
-  id            String   @id @default(uuid()) @db.VarChar(36)
-  body          String   @db.Text
+  id            String    @id @default(uuid()) @db.VarChar(36)
+  body          String    @db.Text
   subject       String
   customerEmail String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now()) @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
   Quote         Quote?
+  RfqItem       RfqItem[]
+}
+
+model RfqItem {
+  id        String  @id @default(uuid()) @db.VarChar(36)
+  quantity  Float
+  rfqId     String  @db.VarChar(36)
+  productId String  @db.VarChar(36)
+  rfq       Rfq     @relation(fields: [rfqId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Sale {
@@ -88,4 +98,5 @@ model Product {
   updatedAt        DateTime           @default(now()) @updatedAt
   QuoteItem        QuoteItem[]
   InventoryProduct InventoryProduct[]
+  RfqItem          RfqItem[]
 }

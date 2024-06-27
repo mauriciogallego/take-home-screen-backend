@@ -3,9 +3,18 @@ import { Rfq, Prisma } from '@prisma/client';
 import { Service } from '@src/common/classes/service.class';
 import { errorCodes } from '@src/constants/errors';
 import { IEntityService, IPaginationArgs } from '@src/interfaces/types';
+import { ChatgptService } from './chatgpt.service';
+import { PrismaService } from '@src/database/prisma.service';
 
 @Injectable()
 export class RfqService extends Service implements IEntityService {
+  constructor(
+    readonly prisma: PrismaService,
+    readonly chatgptService: ChatgptService,
+  ) {
+    super(prisma);
+  }
+
   async findAll(params: IPaginationArgs<Prisma.RfqFindManyArgs>) {
     const { includeCount, skip, take, ...findAllParams } = params;
 
@@ -32,6 +41,7 @@ export class RfqService extends Service implements IEntityService {
     return result;
   }
   create() {
+    this.chatgptService;
     throw new Error('Method not implemented.');
   }
   update() {
