@@ -31,8 +31,10 @@ export class RfqService extends Service implements IEntityService {
     }
     return result;
   }
-  create() {
-    throw new Error('Method not implemented.');
+  create(data) {
+    console.log('Subeject: ' + data?.subject);
+    console.log('text: ' + data?.text);
+    return true;
   }
   update() {
     throw new Error('Method not implemented.');
