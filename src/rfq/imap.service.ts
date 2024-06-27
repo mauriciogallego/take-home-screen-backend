@@ -4,111 +4,108 @@ import { RfqService } from './rfq.service';
 import { PrismaService } from '@src/database/prisma.service';
 import * as Imap from 'imap';
 import { simpleParser } from 'mailparser';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ImapService extends Service implements OnModuleInit {
+  imap: Imap;
   constructor(
     readonly prisma: PrismaService,
     private rfqService: RfqService,
+    private configService: ConfigService,
   ) {
     super(prisma);
   }
 
   onModuleInit() {
-    const mailUser = process.env.MAIL_USER;
-    const mailPass = process.env.MAIL_PASS;
-
-    if (!mailUser) {
+    const { user, pass } = this.configService.get('mail');
+    if (!user) {
       throw new Error('user mail is missing');
     }
-
-    if (!mailPass) {
+    if (!pass) {
       throw new Error('mail password is missing');
     }
-
-    const imap = new Imap({
-      user: mailUser,
-      password: mailPass,
+    this.imap = new Imap({
+      user: user,
+      password: pass,
       host: 'imap.gmail.com',
       port: 993,
       tls: true,
       tlsOptions: { rejectUnauthorized: false },
     });
 
-    // function to open the mail inbox
-    function openInbox(action) {
-      imap.openBox('INBOX', false, action);
-    }
+    this.imap.once('ready', () => {
+      console.log('Successfully connected to the mail server.');
 
-    const self = this;
+      // open mail inbox
+      this.openInbox((err) => {
+        if (err) throw Error('Error opening inbox' + err);
 
-    // function to get and process the mail
-    function fetchUnreadMails() {
-      // Search for unseen (unread) emails
-      imap.search(['UNSEEN'], (err, results) => {
-        if (err) throw Error('Error searching unseen mails' + err);
-        if (results.length > 0) {
-          // Fetch the unread emails
-          const fetch = imap.fetch(results, { bodies: '', markSeen: true });
-          fetch.on('message', (msg) => {
-            msg.on('body', (stream) => {
-              // Collect the stream data
-              let buffer = '';
-              stream.on('data', (chunk) => {
-                buffer += chunk.toString('utf8');
-              });
-              stream.on('end', () => {
-                // Parse the email
-                simpleParser(buffer, (err, mail) => {
-                  if (err) {
-                    throw new Error('Error parsing mail:' + err);
-                  }
+        // listen for the new mails
+        this.imap.on('mail', () => {
+          this.fetchUnreadMails();
+        });
 
-                  self.rfqService.create({
-                    subject: mail.subject,
-                    text: mail.text,
-                  });
+        // fetch all unread emails
+        this.fetchUnreadMails();
+      });
+    });
+
+    this.imap.once('error', (err) => {
+      throw Error('Error conecting to the mail server' + err);
+    });
+
+    this.imap.once('end', () => {
+      console.log('Mail server connection ended');
+    });
+
+    this.imap.connect();
+  }
+
+  // function to open the mail inbox
+  openInbox(action) {
+    this.imap.openBox('INBOX', false, action);
+  }
+
+  // function to get and process the mail
+  fetchUnreadMails() {
+    // Search for unseen (unread) emails
+    this.imap.search(['UNSEEN'], (err, results) => {
+      if (err) throw Error('Error searching unseen mails' + err);
+      if (results.length > 0) {
+        // Fetch the unread emails
+        const fetch = this.imap.fetch(results, { bodies: '', markSeen: true });
+        fetch.on('message', (msg) => {
+          msg.on('body', (stream) => {
+            // Collect the stream data
+            let buffer = '';
+            stream.on('data', (chunk) => {
+              buffer += chunk.toString('utf8');
+            });
+            stream.on('end', () => {
+              // Parse the email
+              simpleParser(buffer, (err, mail) => {
+                if (err) {
+                  throw new Error('Error parsing mail:' + err);
+                }
+
+                this.rfqService.create({
+                  subject: mail.subject,
+                  text: mail.text,
                 });
               });
             });
           });
-          fetch.once('error', (err) => {
-            throw Error('Fetch mail error:' + err);
-          });
-          fetch.once('end', () => {
-            console.log('Done fetching all unseen mails.');
-          });
-        } else {
-          console.log('No new unread emails.');
-        }
-      });
-    }
-
-    imap.once('ready', () => {
-      console.log('Successfully connected to the mail server.');
-
-      // open mail inbox
-      openInbox((err) => {
-        if (err) throw Error('Error opening inbox' + err);
-
-        // listen for the new mails
-        imap.on('mail', () => {
-          fetchUnreadMails();
         });
-
-        // fetch all unread emails
-        fetchUnreadMails();
-      });
+        fetch.once('error', (err) => {
+          throw Error('Fetch mail error:' + err);
+        });
+        fetch.once('end', () => {
+          console.log('Done fetching all unseen mails.');
+        });
+      } else {
+        console.log('No new unread emails.');
+      }
     });
-
-    imap.once('error', (err) => {
-      throw Error('Error conecting to the mail server' + err);
-    });
-
-    imap.once('end', () => {
-      console.log('Mail server connection ended');
-    });
-
-    imap.connect();
   }
 }
