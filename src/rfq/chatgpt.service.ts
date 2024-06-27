@@ -1,36 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class ChatgptService {
-  private readonly apiKey: string;
-  private readonly apiUrl: string;
+export class ChatgptService implements OnModuleInit {
+  openai: OpenAI;
 
-  constructor(
-    private readonly httpService: HttpService,
-    private configService: ConfigService,
-  ) {
-    this.apiKey = this.configService.get('openAIApiKey');
-    this.apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
+  constructor(private configService: ConfigService) {}
+
+  onModuleInit() {
+    const { apiKey, org } = this.configService.get('openai');
+
+    this.openai = new OpenAI({
+      apiKey,
+      organization: org,
+    });
   }
 
-  generateResponse(prompt: string): Observable<AxiosResponse> {
-    const data = {
-      prompt: prompt,
-      max_tokens: 150,
-      n: 1,
-      stop: null,
-      temperature: 1,
-    };
+  async generateResponse(
+    prompt: string,
+  ): Promise<OpenAI.Chat.Completions.ChatCompletion.Choice> {
+    const completion = await this.openai.chat.completions.create({
+      messages: [{ role: 'user', content: prompt }],
+      model: 'gpt-3.5-turbo',
+      max_tokens: 20,
+    });
 
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.apiKey}`,
-    };
-
-    return this.httpService.post(this.apiUrl, data, { headers: headers });
+    return completion.choices[0];
   }
 }

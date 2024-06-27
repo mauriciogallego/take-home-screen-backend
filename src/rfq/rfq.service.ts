@@ -2,9 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Rfq, Prisma } from '@prisma/client';
 import { Service } from '@src/common/classes/service.class';
 import { errorCodes } from '@src/constants/errors';
-import { IEntityService, IPaginationArgs } from '@src/interfaces/types';
+import {
+  IEntityService,
+  IPaginationArgs,
+  createRFQData,
+} from '@src/interfaces/types';
 import { ChatgptService } from './chatgpt.service';
 import { PrismaService } from '@src/database/prisma.service';
+import { isRfq, getProductList } from '@src/constants/frq.constant';
 
 @Injectable()
 export class RfqService extends Service implements IEntityService {
@@ -40,10 +45,31 @@ export class RfqService extends Service implements IEntityService {
     }
     return result;
   }
-  create(data) {
-    console.log('Subeject: ' + data?.subject);
-    console.log('text: ' + data?.text);
-    return true;
+
+  async create({ subject, text, email }: createRFQData) {
+    // asking AI if the email is a RFQ
+    const RFQQuestion = await this.chatgptService.generateResponse(
+      isRfq + text,
+    );
+
+    if (RFQQuestion.message.content === 'YES') {
+      const productQuestion = await this.chatgptService.generateResponse(
+        getProductList + text,
+      );
+
+      const products = JSON.parse(productQuestion.message.content) as object;
+
+      await this.prisma.rfq.create({
+        data: {
+          customerEmail: email.address,
+          body: text,
+          subject,
+          items: products,
+        },
+      });
+    }
+
+    return;
   }
   update() {
     throw new Error('Method not implemented.');
