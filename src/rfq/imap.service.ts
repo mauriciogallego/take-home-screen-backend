@@ -5,6 +5,7 @@ import { PrismaService } from '@src/database/prisma.service';
 import * as Imap from 'imap';
 import { simpleParser } from 'mailparser';
 import { ConfigService } from '@nestjs/config';
+import { errorCodes } from '@src/constants/errors';
 
 @Injectable()
 export class ImapService extends Service implements OnModuleInit {
@@ -18,18 +19,16 @@ export class ImapService extends Service implements OnModuleInit {
   }
 
   onModuleInit() {
-    const { user, pass } = this.configService.get('mail');
-    if (!user) {
-      throw new Error('user mail is missing');
+    const { user, pass, host, port } = this.configService.get('mail');
+    if (!user || !pass || !host || !port) {
+      throw new Error(errorCodes.EMAIL_CONNECTION_LOST);
     }
-    if (!pass) {
-      throw new Error('mail password is missing');
-    }
+
     this.imap = new Imap({
       user: user,
       password: pass,
-      host: 'imap.gmail.com',
-      port: 993,
+      host: host,
+      port: port,
       tls: true,
       tlsOptions: { rejectUnauthorized: false },
     });
@@ -51,7 +50,7 @@ export class ImapService extends Service implements OnModuleInit {
       });
     });
 
-    this.imap.once('error', (err) => {
+    this.imap.once('error', (err: string) => {
       throw Error('Error conecting to the mail server' + err);
     });
 
@@ -63,7 +62,7 @@ export class ImapService extends Service implements OnModuleInit {
   }
 
   // function to open the mail inbox
-  openInbox(action) {
+  openInbox(action: (err: Error) => void) {
     this.imap.openBox('INBOX', false, action);
   }
 
@@ -92,6 +91,7 @@ export class ImapService extends Service implements OnModuleInit {
                 this.rfqService.create({
                   subject: mail.subject,
                   text: mail.text,
+                  email: mail.from.value[0],
                 });
               });
             });

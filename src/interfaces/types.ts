@@ -1,3 +1,5 @@
+import { EmailAddress } from 'mailparser';
+
 export interface IAccessToken {
   access_token: string;
 }
@@ -49,3 +51,9 @@ export interface IEntityService {
   update(id: string, data: any, ...rest);
   delete?(id: string);
 }
+
+export type createRFQData = {
+  subject: string;
+  text: string;
+  email: EmailAddress;
+};

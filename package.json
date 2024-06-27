@@ -39,6 +39,7 @@
     "class-validator": "^0.14.1",
     "imap": "^0.8.19",
     "mailparser": "^3.7.1",
+    "openai": "^4.52.1",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "prisma": "^5.16.0",
