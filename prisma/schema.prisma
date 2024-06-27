@@ -18,6 +18,7 @@ model Quote {
   total     Float       @default(0)
   frqId     String      @unique @db.VarChar(36)
   saleId    String      @db.VarChar(36)
+  address   String
   createdAt DateTime    @default(now())
   updatedAt DateTime    @default(now()) @updatedAt
   sale      Sale        @relation(fields: [saleId], references: [id])
@@ -31,7 +32,9 @@ model QuoteItem {
   productId  String   @db.VarChar(36)
   amount     Float
   priceUnit  Float
-  expireDate DateTime
+  unit       String
+  dimensions String
+  dueDate    DateTime
   quantity   Float
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt

@@ -23,7 +23,6 @@ export class ChatgptService implements OnModuleInit {
     const completion = await this.openai.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
       model: 'gpt-3.5-turbo',
-      max_tokens: 20,
     });
 
     return completion.choices[0];

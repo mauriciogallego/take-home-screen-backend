@@ -51,6 +51,7 @@ export class RfqService extends Service implements IEntityService {
     const RFQQuestion = await this.chatgptService.generateResponse(
       isRfq + text,
     );
+    console.log(RFQQuestion);
 
     if (RFQQuestion.message.content === 'YES') {
       const productQuestion = await this.chatgptService.generateResponse(
@@ -58,7 +59,6 @@ export class RfqService extends Service implements IEntityService {
       );
 
       const products = JSON.parse(productQuestion.message.content) as object;
-
       await this.prisma.rfq.create({
         data: {
           customerEmail: email.address,
