@@ -91,6 +91,7 @@ export class ImapService extends Service implements OnModuleInit {
                 this.rfqService.create({
                   subject: mail.subject,
                   text: mail.text,
+                  html: mail.html || '',
                   email: mail.from.value[0],
                 });
               });

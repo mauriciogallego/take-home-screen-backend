@@ -45,7 +45,7 @@ export class RfqService extends Service implements IEntityService {
       throw new NotFoundException(errorCodes.FQR_NOT_FOUND);
     }
 
-    const products = result.items.valueOf() as ProductRFQ[];
+    const { products } = result.items as { products: ProductRFQ[] };
 
     // every time some ask for an RFQ, we'll calculate the stock at the moment
     const stock = await this.prisma.inventoryProduct.findMany({
@@ -74,7 +74,7 @@ export class RfqService extends Service implements IEntityService {
     };
   }
 
-  async create({ subject, text, email }: CreateRFQData) {
+  async create({ subject, text, email, html }: CreateRFQData) {
     // asking AI if the email is a RFQ
     const RFQQuestion = await this.chatgptService.generateResponse(
       isRfq + text,
@@ -89,7 +89,7 @@ export class RfqService extends Service implements IEntityService {
       await this.prisma.rfq.create({
         data: {
           customerEmail: email.address,
-          body: text,
+          body: html || text,
           subject,
           items: products,
         },

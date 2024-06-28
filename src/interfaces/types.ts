@@ -55,6 +55,7 @@ export interface IEntityService {
 export type CreateRFQData = {
   subject: string;
   text: string;
+  html: string;
   email: EmailAddress;
 };
 
