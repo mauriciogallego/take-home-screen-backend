@@ -2,13 +2,13 @@
 CREATE TABLE `Quote` (
     `id` VARCHAR(36) NOT NULL,
     `total` DOUBLE NOT NULL DEFAULT 0,
-    `frqId` VARCHAR(36) NOT NULL,
+    `rfqId` VARCHAR(36) NOT NULL,
     `saleId` VARCHAR(36) NOT NULL,
-    `address` VARCHAR(191) NOT NULL,
+    `address` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `Quote_frqId_key`(`frqId`),
+    UNIQUE INDEX `Quote_rfqId_key`(`rfqId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -20,8 +20,7 @@ CREATE TABLE `QuoteItem` (
     `amount` DOUBLE NOT NULL,
     `priceUnit` DOUBLE NOT NULL,
     `unit` VARCHAR(191) NOT NULL,
-    `dimensions` VARCHAR(191) NOT NULL,
-    `dueDate` DATETIME(3) NOT NULL,
+    `dueDate` DATETIME(3) NULL,
     `quantity` DOUBLE NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -80,9 +79,10 @@ CREATE TABLE `Product` (
     `id` VARCHAR(36) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `code` VARCHAR(191) NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
-    `deafultPrice` DOUBLE NOT NULL,
-    `measuringUnit` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `unit` VARCHAR(191) NOT NULL,
+    `dimensions` VARCHAR(191) NULL,
+    `defaultPrice` DOUBLE NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -93,7 +93,7 @@ CREATE TABLE `Product` (
 ALTER TABLE `Quote` ADD CONSTRAINT `Quote_saleId_fkey` FOREIGN KEY (`saleId`) REFERENCES `Sale`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Quote` ADD CONSTRAINT `Quote_frqId_fkey` FOREIGN KEY (`frqId`) REFERENCES `Rfq`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Quote` ADD CONSTRAINT `Quote_rfqId_fkey` FOREIGN KEY (`rfqId`) REFERENCES `Rfq`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `QuoteItem` ADD CONSTRAINT `QuoteItem_quoteId_fkey` FOREIGN KEY (`quoteId`) REFERENCES `Quote`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

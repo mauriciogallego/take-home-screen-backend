@@ -16,30 +16,29 @@ datasource db {
 model Quote {
   id        String      @id @default(uuid()) @db.VarChar(36)
   total     Float       @default(0)
-  frqId     String      @unique @db.VarChar(36)
+  rfqId     String      @unique @db.VarChar(36)
   saleId    String      @db.VarChar(36)
-  address   String
+  address   String?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @default(now()) @updatedAt
   sale      Sale        @relation(fields: [saleId], references: [id])
-  rfq       Rfq         @relation(fields: [frqId], references: [id])
+  rfq       Rfq         @relation(fields: [rfqId], references: [id])
   QuoteItem QuoteItem[]
 }
 
 model QuoteItem {
-  id         String   @id @default(uuid()) @db.VarChar(36)
-  quoteId    String   @db.VarChar(36)
-  productId  String   @db.VarChar(36)
-  amount     Float
-  priceUnit  Float
-  unit       String
-  dimensions String
-  dueDate    DateTime
-  quantity   Float
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-  quote      Quote    @relation(fields: [quoteId], references: [id])
-  product    Product  @relation(fields: [productId], references: [id])
+  id        String    @id @default(uuid()) @db.VarChar(36)
+  quoteId   String    @db.VarChar(36)
+  productId String    @db.VarChar(36)
+  amount    Float
+  priceUnit Float
+  unit      String
+  dueDate   DateTime?
+  quantity  Float
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  quote     Quote     @relation(fields: [quoteId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
 }
 
 model Rfq {
@@ -87,9 +86,10 @@ model Product {
   id               String             @id @default(uuid()) @db.VarChar(36)
   name             String
   code             String
-  description      String
-  deafultPrice     Float
-  measuringUnit    String
+  description      String?
+  unit             String
+  dimensions       String?
+  defaultPrice     Float
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @default(now()) @updatedAt
   QuoteItem        QuoteItem[]

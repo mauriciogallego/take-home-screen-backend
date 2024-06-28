@@ -12,8 +12,8 @@ const model: Model & {
       name: 'Stainless Steel Sheets',
       code: 'SSS-01',
       description: '',
-      deafultPrice: 2,
-      measuringUnit: 'sheets',
+      defaultPrice: 2,
+      unit: 'sheets',
       InventoryProduct: {
         create: {
           quantity: 400,
@@ -25,8 +25,8 @@ const model: Model & {
       name: 'Carbon Steel Tubes',
       code: 'CST-01',
       description: '',
-      deafultPrice: 1.5,
-      measuringUnit: 'tubes',
+      defaultPrice: 1.5,
+      unit: 'tubes',
       InventoryProduct: {
         create: {
           quantity: 250,

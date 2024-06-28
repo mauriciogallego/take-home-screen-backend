@@ -9,7 +9,7 @@ export class Quote implements QuotePrisma {
   @ApiProperty()
   total: number;
   @ApiProperty()
-  frqId: string;
+  rfqId: string;
   @ApiProperty()
   saleId: string;
   @ApiProperty()

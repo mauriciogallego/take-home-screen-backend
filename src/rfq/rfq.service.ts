@@ -10,7 +10,7 @@ import {
 } from '@src/interfaces/types';
 import { ChatgptService } from './chatgpt.service';
 import { PrismaService } from '@src/database/prisma.service';
-import { isRfq, getProductList } from '@src/constants/frq.constant';
+import { isRfq, getProductList } from '@src/constants/rfq.constant';
 
 @Injectable()
 export class RfqService extends Service implements IEntityService {
@@ -47,6 +47,7 @@ export class RfqService extends Service implements IEntityService {
 
     const products = result.items.valueOf() as ProductRFQ[];
 
+    // every time some ask for an RFQ, we'll calculate the stock at the moment
     const stock = await this.prisma.inventoryProduct.findMany({
       where: {
         OR: products.map((i) => ({
@@ -62,6 +63,7 @@ export class RfqService extends Service implements IEntityService {
         product: {
           select: {
             name: true,
+            defaultPrice: true,
           },
         },
       },

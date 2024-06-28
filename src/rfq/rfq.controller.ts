@@ -31,8 +31,8 @@ export class RfqController {
 
   @ApiOperation({
     servers: [{ url: '/v1' }],
-    summary: 'Get one Frq',
-    description: 'Return an Frq',
+    summary: 'Get one rfq',
+    description: 'Return an rfq',
   })
   @Get(':id')
   async findOne(
