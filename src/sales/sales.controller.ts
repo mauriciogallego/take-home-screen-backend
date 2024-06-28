@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SalesService } from './sales.service';
 import { ListQueryArgsDto } from '@src/common/dto/list-query-args.dto';
@@ -16,6 +16,18 @@ import { Sale } from '@prisma/client';
 })
 export class SalesController {
   constructor(private salesService: SalesService) {}
+
+  @ApiOperation({
+    servers: [{ url: '/v1' }],
+    summary: 'Get user information based on request token',
+  })
+  @Get('me')
+  async getMe(
+    @Request() req,
+    @Query(GetQueryArgsPipe) params: GetQueryRelationDto,
+  ): Promise<Sale> {
+    return await this.salesService.findOne(req.user.id, params);
+  }
 
   @ApiOperation({
     servers: [{ url: '/v1' }],

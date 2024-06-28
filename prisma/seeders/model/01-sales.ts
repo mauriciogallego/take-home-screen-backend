@@ -1,5 +1,8 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 import { Model } from '../seed';
+
+const hashedPassword = bcrypt.hashSync('pass*2023', 10);
 
 const model: Model & {
   data: Prisma.SaleCreateInput[];
@@ -7,7 +10,7 @@ const model: Model & {
   data: [
     {
       name: 'prueba',
-      password: '$2a$10$2/Xm9ROhke4hlMxcVJZFMOL6/30vHXPNr/XHqgTznvcK44W2FABg2',
+      password: hashedPassword,
       email: 'mauricio@gmail.com',
     },
   ],

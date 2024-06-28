@@ -3,10 +3,15 @@ import { Sale } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import { Service } from '@src/common/classes/service.class';
 import { errorCodes } from '@src/constants/errors';
+import { PrismaService } from '@src/database/prisma.service';
 import { IEntityService, IPaginationArgs } from '@src/interfaces/types';
 
 @Injectable()
 export class SalesService extends Service implements IEntityService {
+  constructor(readonly prisma: PrismaService) {
+    super(prisma);
+  }
+
   findByEmail(email: string) {
     return this.prisma.sale.findFirst({
       where: { email },

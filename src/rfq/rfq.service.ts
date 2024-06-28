@@ -39,7 +39,7 @@ export class RfqService extends Service implements IEntityService {
       ...findArgs,
     };
 
-    const result = (await this.get('frq', args)) as Rfq;
+    const result = (await this.get('rfq', args)) as Rfq;
     if (!result) {
       throw new NotFoundException(errorCodes.FQR_NOT_FOUND);
     }
