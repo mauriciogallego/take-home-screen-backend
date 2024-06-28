@@ -52,8 +52,16 @@ export interface IEntityService {
   delete?(id: string);
 }
 
-export type createRFQData = {
+export type CreateRFQData = {
   subject: string;
   text: string;
   email: EmailAddress;
+};
+
+export type ProductRFQ = {
+  name: string;
+  unit: string;
+  quantity: number;
+  dimensions: string;
+  expiration_date: string;
 };

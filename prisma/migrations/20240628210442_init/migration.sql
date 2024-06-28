@@ -4,6 +4,7 @@ CREATE TABLE `Quote` (
     `total` DOUBLE NOT NULL DEFAULT 0,
     `frqId` VARCHAR(36) NOT NULL,
     `saleId` VARCHAR(36) NOT NULL,
+    `address` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -18,7 +19,9 @@ CREATE TABLE `QuoteItem` (
     `productId` VARCHAR(36) NOT NULL,
     `amount` DOUBLE NOT NULL,
     `priceUnit` DOUBLE NOT NULL,
-    `expireDate` DATETIME(3) NOT NULL,
+    `unit` VARCHAR(191) NOT NULL,
+    `dimensions` VARCHAR(191) NOT NULL,
+    `dueDate` DATETIME(3) NOT NULL,
     `quantity` DOUBLE NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -32,6 +35,7 @@ CREATE TABLE `Rfq` (
     `body` TEXT NOT NULL,
     `subject` VARCHAR(191) NOT NULL,
     `customerEmail` VARCHAR(191) NOT NULL,
+    `items` JSON NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -66,10 +70,9 @@ CREATE TABLE `Inventory` (
 CREATE TABLE `InventoryProduct` (
     `productId` VARCHAR(36) NOT NULL,
     `inventoryId` VARCHAR(36) NOT NULL,
-    `amount` DOUBLE NOT NULL,
+    `quantity` DOUBLE NOT NULL,
 
-    UNIQUE INDEX `InventoryProduct_productId_key`(`productId`),
-    UNIQUE INDEX `InventoryProduct_inventoryId_key`(`inventoryId`)
+    PRIMARY KEY (`productId`, `inventoryId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable

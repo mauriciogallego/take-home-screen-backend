@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Prisma, Rfq as RfqPrisma } from '@prisma/client';
+import { InventoryProduct, Prisma, Rfq as RfqPrisma } from '@prisma/client';
 
 export class Rfq implements RfqPrisma {
   @ApiProperty()
@@ -16,4 +16,17 @@ export class Rfq implements RfqPrisma {
   createdAt: Date;
   @ApiProperty()
   updatedAt: Date;
+  @ApiProperty({
+    example: [
+      {
+        product: {
+          name: 'string',
+        },
+        productId: 'string',
+        inventoryId: 'string',
+        quantity: 'number',
+      },
+    ],
+  })
+  inventory: InventoryProduct[];
 }

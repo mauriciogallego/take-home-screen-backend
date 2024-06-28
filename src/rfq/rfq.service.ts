@@ -5,7 +5,8 @@ import { errorCodes } from '@src/constants/errors';
 import {
   IEntityService,
   IPaginationArgs,
-  createRFQData,
+  CreateRFQData,
+  ProductRFQ,
 } from '@src/interfaces/types';
 import { ChatgptService } from './chatgpt.service';
 import { PrismaService } from '@src/database/prisma.service';
@@ -43,15 +44,39 @@ export class RfqService extends Service implements IEntityService {
     if (!result) {
       throw new NotFoundException(errorCodes.FQR_NOT_FOUND);
     }
-    return result;
+
+    const products = result.items.valueOf() as ProductRFQ[];
+
+    const stock = await this.prisma.inventoryProduct.findMany({
+      where: {
+        OR: products.map((i) => ({
+          product: {
+            name: i.name,
+          },
+        })),
+        quantity: {
+          gte: 1,
+        },
+      },
+      include: {
+        product: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return {
+      ...result,
+      inventory: stock,
+    };
   }
 
-  async create({ subject, text, email }: createRFQData) {
+  async create({ subject, text, email }: CreateRFQData) {
     // asking AI if the email is a RFQ
     const RFQQuestion = await this.chatgptService.generateResponse(
       isRfq + text,
     );
-    console.log(RFQQuestion);
 
     if (RFQQuestion.message.content === 'YES') {
       const productQuestion = await this.chatgptService.generateResponse(

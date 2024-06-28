@@ -75,10 +75,12 @@ model Inventory {
 
 model InventoryProduct {
   product     Product   @relation(fields: [productId], references: [id])
-  productId   String    @unique @db.VarChar(36)
+  productId   String    @db.VarChar(36)
   inventory   Inventory @relation(fields: [inventoryId], references: [id])
-  inventoryId String    @unique @db.VarChar(36)
-  amount      Float
+  inventoryId String    @db.VarChar(36)
+  quantity    Float
+
+  @@id([productId, inventoryId])
 }
 
 model Product {
