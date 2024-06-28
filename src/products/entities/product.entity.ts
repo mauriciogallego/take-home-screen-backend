@@ -11,9 +11,11 @@ export class Product implements ProductPrisma {
   @ApiProperty()
   description: string;
   @ApiProperty()
-  deafultPrice: number;
+  unit: string;
   @ApiProperty()
-  measuringUnit: string;
+  dimensions: string;
+  @ApiProperty()
+  defaultPrice: number;
   @ApiProperty()
   createdAt: Date;
   @ApiProperty()
