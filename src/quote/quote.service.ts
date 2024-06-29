@@ -96,7 +96,7 @@ export class QuotesService extends Service implements IEntityService {
         throw new UnprocessableEntityException(errorCodes.PRODUCT_NOT_FOUND);
       }
 
-      if (inventoryProduct.quantity <= item.quantity) {
+      if (inventoryProduct.quantity < item.quantity) {
         throw new UnprocessableEntityException(errorCodes.PRODUCT_OUT_OF_STOCK);
       }
     }
@@ -154,27 +154,28 @@ export class QuotesService extends Service implements IEntityService {
           },
         },
       },
+      include: {
+        rfq: true,
+        QuoteItem: {
+          include: {
+            product: true,
+          },
+        },
+      },
     });
 
     this.sendGridService.sendEmailWithTemplate({
-      recipient: 'josega200522@gmail.com',
+      recipient: quoteCreated.rfq.customerEmail,
       body: {
-        recipient_name: 'Jose',
-        orderDetails: [
-          {
-            name: 'Product 1',
-            quantity: 1,
-            price: '$10.00',
-          },
-          {
-            name: 'Product 2',
-            quantity: 2,
-            price: '$20.00',
-          },
-        ],
-        total: '$30.00',
+        recipient_name: quoteCreated.rfq.customerEmail,
+        orderDetails: quoteCreated.QuoteItem.map((i) => ({
+          name: i.product.name,
+          quantity: i.quantity,
+          price: i.amount.toString(),
+        })),
+        total: `$ ${quoteCreated.total}`,
       },
-      subject: 'test',
+      subject: 'RFQ',
     });
 
     return quoteCreated;
