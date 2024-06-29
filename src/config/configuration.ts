@@ -1,4 +1,5 @@
 export default () => ({
+  defaultInventoryId: process.env.INVENTORY_ID,
   jwt: {
     secret: process.env.JWT_SECRET || 'secret',
     expiration: process.env.JWT_EXPIRATION || '10y',
