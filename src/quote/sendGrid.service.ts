@@ -7,7 +7,7 @@ import { SendEmailTemplate, SendEmailTest } from '@src/interfaces/types';
 @Injectable()
 export class SendGridService {
   private logger: Logger;
-  private confirmation_template_id: string;
+  private confirmationTemplateId: string;
   private from: string;
 
   constructor(
@@ -16,13 +16,13 @@ export class SendGridService {
   ) {
     this.logger = new Logger(SendGridService.name);
 
-    const sendGridConfing = this.configService.get('sendGrid');
-    const mail = this.configService.get('mail').user;
+    const { confirmationTemplateId, key } = this.configService.get('sendGrid');
+    const { user } = this.configService.get('mail');
 
-    this.confirmation_template_id = sendGridConfing.confirmation_template_id;
-    this.from = mail;
+    this.confirmationTemplateId = confirmationTemplateId;
+    this.from = user;
 
-    SendGrid.setApiKey(sendGridConfing.key);
+    SendGrid.setApiKey(key);
   }
 
   async send(mail: SendGrid.MailDataRequired): Promise<void> {
@@ -58,7 +58,7 @@ export class SendGridService {
       to: recipient,
       from: this.from,
       subject: subject,
-      templateId: this.confirmation_template_id,
+      templateId: this.confirmationTemplateId,
       dynamicTemplateData: { ...body },
     };
 

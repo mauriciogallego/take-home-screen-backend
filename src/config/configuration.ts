@@ -17,6 +17,6 @@ export default () => ({
   },
   sendGrid: {
     key: process.env.TAKEHOME_SENDGRID_KEY,
-    confirmation_template_id: process.env.MAIL_TEMPLATE_CONFIRMATION_ID,
+    confirmationTemplateId: process.env.MAIL_TEMPLATE_CONFIRMATION_ID,
   },
 });
