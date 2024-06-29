@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsDateString,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -17,10 +16,6 @@ export class CreateQuoteItemDto {
   @IsNumber()
   @IsNotEmpty()
   quantity: number;
-
-  @IsDateString()
-  @IsNotEmpty()
-  dueDate: string;
 }
 
 export class CreateQuoteDto {

@@ -70,7 +70,6 @@ export class QuotesService extends Service implements IEntityService {
         amount: item.quantity * product.defaultPrice,
         priceUnit: product.defaultPrice,
         unit: product.unit,
-        dueDate: item.dueDate,
       };
     });
   }

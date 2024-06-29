@@ -21,6 +21,7 @@ export class Rfq implements RfqPrisma {
       {
         product: {
           name: 'string',
+          defaultPrice: 'number',
         },
         productId: 'string',
         inventoryId: 'string',
