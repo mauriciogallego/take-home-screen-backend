@@ -10,12 +10,14 @@ import { IEntityService, IPaginationArgs } from '@src/interfaces/types';
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { PrismaService } from '@src/database/prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { SendGridService } from './sendGrid.service';
 
 @Injectable()
 export class QuotesService extends Service implements IEntityService {
   constructor(
     readonly prisma: PrismaService,
     private configService: ConfigService,
+    private sendGridService: SendGridService,
   ) {
     super(prisma);
   }
@@ -95,7 +97,7 @@ export class QuotesService extends Service implements IEntityService {
         throw new UnprocessableEntityException(errorCodes.PRODUCT_NOT_FOUND);
       }
 
-      if (inventoryProduct.quantity >= item.quantity) {
+      if (inventoryProduct.quantity <= item.quantity) {
         throw new UnprocessableEntityException(errorCodes.PRODUCT_OUT_OF_STOCK);
       }
     }
@@ -153,6 +155,27 @@ export class QuotesService extends Service implements IEntityService {
           },
         },
       },
+    });
+
+    this.sendGridService.sendEmailWithTemplate({
+      recipient: 'josega200522@gmail.com',
+      body: {
+        recipient_name: 'Jose',
+        orderDetails: [
+          {
+            name: 'Product 1',
+            quantity: 1,
+            price: '$10.00',
+          },
+          {
+            name: 'Product 2',
+            quantity: 2,
+            price: '$20.00',
+          },
+        ],
+        total: '$30.00',
+      },
+      subject: 'test',
     });
 
     return quoteCreated;

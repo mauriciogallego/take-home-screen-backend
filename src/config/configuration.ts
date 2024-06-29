@@ -15,4 +15,8 @@ export default () => ({
     host: process.env.MAIL_HOST,
     port: process.env.MAIL_PORT,
   },
+  sendGrid: {
+    key: process.env.TAKEHOME_SENDGRID_KEY,
+    confirmation_template_id: process.env.MAIL_TEMPLATE_CONFIRMATION_ID,
+  },
 });

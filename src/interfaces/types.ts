@@ -1,5 +1,24 @@
 import { EmailAddress } from 'mailparser';
 
+export interface SendEmailTest {
+  recipient: string;
+  body: string;
+}
+
+export interface SendEmailTemplate {
+  recipient: string;
+  body: {
+    recipient_name: string;
+    orderDetails: {
+      name: string;
+      quantity: number;
+      price: string;
+    }[];
+    total: string;
+  };
+  subject: string;
+}
+
 export interface IAccessToken {
   access_token: string;
 }
