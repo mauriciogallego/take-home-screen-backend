@@ -13,6 +13,11 @@ const model: Model & {
       password: hashedPassword,
       email: 'mauricio@gmail.com',
     },
+    {
+      name: 'sales testing',
+      password: hashedPassword,
+      email: 'salesTesting@gmail.com',
+    },
   ],
   async run(prisma: PrismaClient) {
     for (const user of this.data) {

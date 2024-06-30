@@ -23,9 +23,13 @@ export class QuotesService extends Service implements IEntityService {
   }
 
   private async validateRfqId(id: string) {
+    // make sure the RFQ is not related yet
     const exist = await this.prisma.rfq.count({
       where: {
         id,
+        Quote: {
+          is: null,
+        },
       },
     });
 

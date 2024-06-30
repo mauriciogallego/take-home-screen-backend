@@ -41,7 +41,6 @@ const model: Model & {
       defaultPrice: 1.5,
       description: '',
       dimensions: ' length: 2000, width: 1000, thickness: 5',
-      expiration_date: '2025-12-31',
       InventoryProduct: {
         create: {
           quantity: 500,
@@ -56,7 +55,6 @@ const model: Model & {
       defaultPrice: 15,
       description: '',
       dimensions: 'length: 6, diameter: 50,',
-      expiration_date: '2026-05-15',
       InventoryProduct: {
         create: {
           quantity: 200,
@@ -71,7 +69,6 @@ const model: Model & {
       description: '',
       defaultPrice: 11.5,
       dimensions: 'length: 3, diameter: 20 ',
-      expiration_date: '2024-11-20',
       InventoryProduct: {
         create: {
           quantity: 100,
@@ -86,7 +83,6 @@ const model: Model & {
       description: '',
       dimensions: 'length: 1500,width: 1000,thickness: 2',
       defaultPrice: 22,
-      expiration_date: '2027-03-10',
       InventoryProduct: {
         create: {
           quantity: 300,
@@ -101,7 +97,6 @@ const model: Model & {
       description: '',
       defaultPrice: 0.1,
       dimensions: 'length: 4, diameter: 25,',
-      expiration_date: '2025-08-30',
       InventoryProduct: {
         create: {
           quantity: 150,
@@ -116,7 +111,6 @@ const model: Model & {
       description: '',
       dimensions: 'length: 2500, width: 1200, thickness: 3,',
       defaultPrice: 10,
-      expiration_date: '2028-01-25',
       InventoryProduct: {
         create: {
           quantity: 50,
@@ -137,7 +131,6 @@ const model: Model & {
           inventoryId: inventory1,
         },
       },
-      expiration_date: '2024-07-05',
     },
     {
       name: 'Zinc Ingot',
@@ -146,7 +139,6 @@ const model: Model & {
       description: '',
       dimensions: 'length: 300, width: 150, height: 100',
       defaultPrice: 1,
-      expiration_date: '2026-02-17',
       InventoryProduct: {
         create: {
           quantity: 200,
@@ -161,7 +153,6 @@ const model: Model & {
       description: '',
       defaultPrice: 20,
       dimensions: 'length: 2, diameter: 100',
-      expiration_date: '2024-09-11',
       InventoryProduct: {
         create: {
           quantity: 50,
@@ -176,7 +167,6 @@ const model: Model & {
       description: '',
       dimensions: 'length: 500, width: 500, height: 300,',
       defaultPrice: 1,
-      expiration_date: '2025-06-19',
       InventoryProduct: {
         create: {
           quantity: 70,

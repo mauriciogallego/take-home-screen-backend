@@ -81,6 +81,7 @@ export class RfqService extends Service implements IEntityService {
     );
 
     if (RFQQuestion.message.content === 'YES') {
+      // getting products from the email
       const productQuestion = await this.chatgptService.generateResponse(
         getProductList + text,
       );
