@@ -96,7 +96,7 @@ you'll also need an organization ID to complete all the configuration.
 
 the same thing happens here, we will need to create a new private key to use SendGrid.
 click on this link and generate a new private key.
-[Send Grid Keys](https://platform.openai.com/settings/organization/general)
+[Send Grid Keys](https://app.sendgrid.com/settings/api_keys)
 
 ## IMAP
 
