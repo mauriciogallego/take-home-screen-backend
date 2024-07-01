@@ -81,18 +81,25 @@ export class RfqService extends Service implements IEntityService {
     );
 
     if (RFQQuestion.message.content === 'YES') {
+      const products = await this.prisma.product.findMany({
+        select: {
+          name: true,
+        },
+      });
+
+      const productNames = products.map((i) => i.name).join(',');
       // getting products from the email
       const productQuestion = await this.chatgptService.generateResponse(
-        getProductList + text,
+        getProductList(productNames, text),
       );
 
-      const products = JSON.parse(productQuestion.message.content) as object;
+      const items = JSON.parse(productQuestion.message.content) as object;
       await this.prisma.rfq.create({
         data: {
           customerEmail: email.address,
           body: html || text,
           subject,
-          items: products,
+          items,
         },
       });
     }
